@@ -1,0 +1,31 @@
+name: "base"
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.10.*
+  - h5py=3.8.0
+  - scikit-learn=1.1
+  - scikit-image
+  - scipy=1.8
+  - pandas
+  - numpy
+  - matplotlib
+  - jupyter
+  - ipykernel
+  - tqdm
+  - einops
+  - pip
+  - pytorch
+  - torchvision
+  - cudatoolkit 
+  - pip:
+      - treelib
+      - pathos
+      - flake8
+      - datasets
+      - wandb
+
+prefix: "/opt/conda"
+
