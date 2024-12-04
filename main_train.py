@@ -76,20 +76,11 @@ wandb.init(
 
 
 # =========== LOAD DATA ========================
+# OADAT location
+oadat_dir = 'C:/Users/carlo/OADAT'
+
 file_name = 'SWFD_semicircle_RawBP.h5'
 key = 'sc_BP'
-
-# renku +++
-# subprocess.run(
-#     ["rsync", "-avzhP", f"/home/jovyan/work/oadat/{file_name}", "/home/jovyan/work/oadat-ddpm/data"], 
-#     check=True
-# )
-# oadat_dir = '/home/jovyan/work/oadat-ddpm/data' 
-# +++
-
-# LOCAL +++
-oadat_dir = 'C:/Users/carlo/OADAT'
-# +++
 
 prng = np.random.RandomState(42)
 

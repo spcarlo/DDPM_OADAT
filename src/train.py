@@ -57,13 +57,9 @@ def train_model(model, dataloader, optimizer, diffusion_variables, timesteps, ep
     model.train()
 
     # ** CHECKPOINT DIRECTORY **
-    # =======  RENKU  ==========
-    save_dir = f'../external_storage/poly_carlo/checkpoint/{wandb.run.project}/{wandb.run.name}'  
-    os.makedirs(save_dir, exist_ok=True)
-    
     # ===========================
-    save_dir_backup = f'results/checkpoint/{wandb.run.project}/{wandb.run.name}'
-    os.makedirs(save_dir_backup, exist_ok=True)
+    save_dir = f'results/checkpoint/{wandb.run.project}/{wandb.run.name}'
+    os.makedirs(save_dir, exist_ok=True)
     # **************************
 
 
@@ -87,12 +83,14 @@ def train_model(model, dataloader, optimizer, diffusion_variables, timesteps, ep
             optimizer.step()
             # ============================================================================
 
-            # Log to WandB every log_interval
+            # === Log to WandB every log_interval ===
             if batch_idx % log_interval == 0:
                 try:
                     wandb.log({"epoch": epoch+1, "loss": loss.item()})
                 except Exception as e:
                     print(f"Warning: Failed to log to WandB")
+            #  ======================================
+
             # consol print
             if batch_idx % 10 == 0:
                 sys.stdout.write(f'\rEpoch {epoch+1}/{epochs}, Batch {batch_idx}/{total_batches}, Loss: {loss.item():.4f}')
@@ -102,28 +100,14 @@ def train_model(model, dataloader, optimizer, diffusion_variables, timesteps, ep
         model_name = "checkpoint.pth"
         image_name = f'grid_epoch-{epoch+1}'
 
-        try:
-            # Attempt to save to the primary directory
-            save_model(epoch + 1, model, optimizer, 
-                       config_params, diffusion_variables, model_config, 
-                       save_dir, model_name)
+        save_model(epoch + 1, model, optimizer, 
+                    config_params, diffusion_variables, model_config, 
+                    save_dir, model_name)
 
-            # Generate and save images
-            checkpoint_path = os.path.join(save_dir, model_name)
-            grid_img, _ = grid_plot(checkpoint_path, nrow=2, batch_size=4)
-            save_image(grid_img, f'{save_dir}/{image_name}.png')
-
-        except OSError:
-            # Save model checkpoint to backup directory
-            print(f"Error saving to Polybox. Saving to backup.")
-            save_model(epoch + 1, model, optimizer, 
-                       config_params, diffusion_variables, model_config, 
-                       save_dir_backup, model_name)
-
-            # Generate and save images to backup
-            checkpoint_path = os.path.join(save_dir_backup, model_name)
-            grid_img, _ = grid_plot(checkpoint_path, nrow=2, batch_size=4)
-            save_image(grid_img, f'{save_dir_backup}/{image_name}.png')
+        # Generate and save images
+        checkpoint_path = os.path.join(save_dir, model_name)
+        grid_img, _ = grid_plot(checkpoint_path, nrow=2, batch_size=4)
+        save_image(grid_img, f'{save_dir}/{image_name}.png')
 
         torch.cuda.empty_cache()
         # ============== ============ ============= ======================
@@ -142,12 +126,9 @@ def continuing_training(checkpoint_path, dataloader, start_epoch, epochs,
     timesteps = config_params['timesteps']
 
     # ** CHECKPOINT DIRECTORY **
-    # =======  RENKU  ==========
-    save_dir = f'../external_storage/poly_carlo/checkpoint/{wandb.run.project}/{wandb.run.name}'  
-    os.makedirs(save_dir, exist_ok=True)
     # ===========================
-    save_dir_backup = f'results/checkpoint/{wandb.run.project}/{wandb.run.name}'
-    os.makedirs(save_dir_backup, exist_ok=True)
+    save_dir = f'results/checkpoint/{wandb.run.project}/{wandb.run.name}'
+    os.makedirs(save_dir, exist_ok=True)
     # **************************
 
 
@@ -171,12 +152,14 @@ def continuing_training(checkpoint_path, dataloader, start_epoch, epochs,
             optimizer.step()
             # ==========================================
             
-            # Log to WandB every log_interval
+            # === Log to WandB every log_interval ===
             if batch_idx % log_interval == 0:
                 try:
                     wandb.log({"epoch": epoch+1, "loss": loss.item()})
                 except Exception as e:
                     print(f"Warning: Failed to log to WandB")
+            #  ======================================
+            
             # consol print
             if batch_idx % 10 == 0:
                 sys.stdout.write(f'\rEpoch {epoch+1}/{epochs}, Batch {batch_idx}/{total_batches}, Loss: {loss.item():.4f}')
@@ -187,26 +170,15 @@ def continuing_training(checkpoint_path, dataloader, start_epoch, epochs,
         model_name = "checkpoint.pth"
         image_name = f'grid_epoch-{epoch + 1}'
 
-        try:
-            # Attempt to save to the primary directory
-            save_model(epoch + 1, model, optimizer, config_params, diffusion_variables, model_config, 
-                       save_dir, model_name)
-            
-            # Generate and save images
-            checkpoint_path = os.path.join(save_dir, model_name)
-            grid_img, _ = grid_plot(checkpoint_path, nrow=2, batch_size=4)
-            save_image(grid_img, f'{save_dir}/{image_name}.png')
+
+        # Attempt to save to the primary directory
+        save_model(epoch + 1, model, optimizer, config_params, diffusion_variables, model_config, 
+                    save_dir, model_name)
         
-        except OSError:
-            # Save model checkpoint to backup
-            print(f"Error saving to Polybox. Saving to backup.")
-            save_model(epoch + 1, model, optimizer, config_params, diffusion_variables, model_config, 
-                       save_dir_backup, model_name)
-            
-            # Generate and save images to backup
-            checkpoint_path = os.path.join(save_dir_backup, model_name)
-            grid_img, _ = grid_plot(checkpoint_path, nrow=2, batch_size=4)
-            save_image(grid_img, f'{save_dir_backup}/{image_name}.png')
+        # Generate and save images
+        checkpoint_path = os.path.join(save_dir, model_name)
+        grid_img, _ = grid_plot(checkpoint_path, nrow=2, batch_size=4)
+        save_image(grid_img, f'{save_dir}/{image_name}.png')       
         # ================================================================
             
         torch.cuda.empty_cache()
