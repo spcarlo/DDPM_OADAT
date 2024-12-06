@@ -58,7 +58,7 @@ def train_model(model, dataloader, optimizer, diffusion_variables, timesteps, ep
 
     # ** CHECKPOINT DIRECTORY **
     # ===========================
-    save_dir = f'results/checkpoint/{wandb.run.project}/{wandb.run.name}'
+    save_dir = f'results/models/{wandb.run.name}'
     os.makedirs(save_dir, exist_ok=True)
     # **************************
 
@@ -97,7 +97,7 @@ def train_model(model, dataloader, optimizer, diffusion_variables, timesteps, ep
                 sys.stdout.flush() 
 
         # ============== SAVE CHECKPOINT EVERY EPOCH =====================
-        model_name = "checkpoint.pth"
+        model_name = f"{wandb.run.name}.pth"
         image_name = f'grid_epoch-{epoch+1}'
 
         save_model(epoch + 1, model, optimizer, 
@@ -127,7 +127,7 @@ def continuing_training(checkpoint_path, dataloader, start_epoch, epochs,
 
     # ** CHECKPOINT DIRECTORY **
     # ===========================
-    save_dir = f'results/checkpoint/{wandb.run.project}/{wandb.run.name}'
+    save_dir = f'results/models/{wandb.run.name}'
     os.makedirs(save_dir, exist_ok=True)
     # **************************
 
@@ -167,7 +167,7 @@ def continuing_training(checkpoint_path, dataloader, start_epoch, epochs,
 
         
         # ============== SAVE CHECKPOINT EVERY EPOCH =====================
-        model_name = "checkpoint.pth"
+        model_name = f"{wandb.run.name}.pth"
         image_name = f'grid_epoch-{epoch + 1}'
 
 
